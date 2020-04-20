@@ -4,7 +4,8 @@ import com.zeus.examples.simplewebapp.domain.FoodType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.UUID;
 
-public interface FoodItemRepository extends JpaRepository<FoodItem, Integer> {
-    List<FoodItem> findByFridgeIdAndFoodType(Integer fridgeId, FoodType foodType);
+public interface FoodItemRepository extends JpaRepository<FoodItem, UUID> {
+    List<FoodItem> findByFridgeIdAndFoodType(UUID fridgeId, FoodType foodType);
 }
