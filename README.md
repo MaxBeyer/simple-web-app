@@ -18,3 +18,8 @@ The refridgerators in the garage then have a one to many relationship with the f
 | foodId | fridgeId | type | quantity |
 | --- | --- | --- | --- |
 | Int | Int | Enum (beverage/food/soda can/other) | Int |
+
+# Would Have Liked to..
+* Used Kotlin
+* have github actions set up and configured to an automated build/test engine
+* Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
