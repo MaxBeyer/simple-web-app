@@ -10,23 +10,22 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.UUID;
 
 
 @Entity
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode
 public class FoodItem {
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
-    private Integer id;
-    @Column(name = "fidge_id")
-    private Integer fridgeId;
+    private UUID id;
+    @Column(name = "fridge_id")
+    private UUID fridgeId;
     @Enumerated(EnumType.STRING)
     private FoodType foodType;
 
-    public FoodItem(Integer fridgeId, FoodType foodType, Integer quantity){
+    public FoodItem(UUID id, UUID fridgeId, FoodType foodType){
+        this.id = id;
         this.fridgeId = fridgeId;
         this.foodType = foodType;
     }

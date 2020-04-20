@@ -12,23 +12,25 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode
-public class Garage implements Serializable {
+public class Fridge implements Serializable {
     @Id
-    private Integer id;
+    private UUID id;
     private String fridgeName;
     @OneToMany(fetch = FetchType.EAGER, cascade = {CascadeType.ALL}, orphanRemoval = true)
     @JoinColumn(
-            name = "fridge_id",
-            insertable = true
+            name = "fridge_id"
     )
     private List<FoodItem> foodItems;
 
-    public Garage(String fridgeName, List<FoodItem> foodItems){
+    public Fridge(UUID id, String fridgeName){
+        this.id = id;
         this.fridgeName = fridgeName;
-        this.foodItems = foodItems;
+        this.foodItems = new ArrayList<>();
     }
 }
