@@ -1,12 +1,12 @@
-DROP TABLE IF EXISTS garage;
-DROP TABLE IF EXISTS food_item;
+drop table if exists garage;
+drop table if exists food_item;
 
-CREATE TABLE garage (
-  id INT AUTO_INCREMENT  PRIMARY KEY,
-  fridge_name VARCHAR(250) NOT NULL
+create table garage (
+  id int auto_increment  primary key,
+  fridge_name varchar(250) not null
 );
 
-INSERT INTO garage (fridge_name) VALUES
+insert into garage (fridge_name) values
   ('Beer Fridge'),
   ('Chest Freezer'),
   ('Mini Fridge');
@@ -14,6 +14,5 @@ INSERT INTO garage (fridge_name) VALUES
 create table food_item (
     id int auto_increment primary key,
     fridge_id int references garage(id),
-    food_type varchar,
-    quantity int not null
+    food_type varchar
 )
