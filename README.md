@@ -26,3 +26,4 @@ The refridgerators in the garage then have a one to many relationship with the f
 * Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
 * Understood the intricacies of project lombok more
 * initialized the project with Maven since I am coding this on a Windows Machine.  I typically code on a Mac, and am used to using gradle so that is what I initially chose, however that has caused me a lot of trouble with setup.
+* more robust edge case testing

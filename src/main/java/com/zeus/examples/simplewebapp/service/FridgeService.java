@@ -12,8 +12,8 @@ public class FridgeService {
         return null;
     }
 
-    public void storeFood(UUID fridgeId, FoodType foodType) {
-
+    public FoodItem storeFood(UUID fridgeId, FoodType foodType) {
+        return null;
     }
 
     public void removeFood(UUID any, FoodType any1) {
