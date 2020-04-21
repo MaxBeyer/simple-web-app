@@ -11,10 +11,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Optional;
 import java.util.UUID;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -30,46 +33,68 @@ public class FridgeControllerTest {
     @Test
     public void getsFoodItem() {
         // Given
+        var foodItemId = UUID.randomUUID();
         var fridgeId = UUID.randomUUID();
-        when(fridgeService.getFood(any(UUID.class), any(FoodType.class)))
-                .thenReturn(new FoodItem(UUID.randomUUID(), fridgeId, FoodType.FOOD));
+        var foodItem= new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        when(fridgeService.getFood(any()))
+                .thenReturn(Optional.of(foodItem));
 
         // When
-        var result = fridgeController.getFoodItem(fridgeId, FoodType.FOOD);
+        var result = fridgeController.getFoodItem(foodItemId);
 
         // Then
         assertNotNull(result.getBody());
-        assertNotNull(result.getBody().getFoodType());
-        assertNotNull(result.getBody().getFridgeId());
-        assertEquals(result.getBody().getFoodType(), FoodType.FOOD);
-        assertEquals(result.getBody().getFridgeId(), fridgeId);
+        assertEquals(result.getStatusCode(), HttpStatus.OK);
+        assertThat(result.getBody()).isEqualToComparingFieldByField(new FoodItem(foodItemId, fridgeId, FoodType.FOOD));
+        verify(fridgeService, times(1)).getFood(foodItemId);
+    }
+
+    @Test
+    public void noFoodItemFound() {
+        // Given
+        var foodItemId = UUID.randomUUID();
+        var fridgeId = UUID.randomUUID();
+        var foodItem= new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        when(fridgeService.getFood(any()))
+                .thenReturn(Optional.empty());
+
+        // When
+        var result = fridgeController.getFoodItem(foodItemId);
+
+        // Then
+        assertNull(result.getBody());
+        assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
+        verify(fridgeService, times(1)).getFood(foodItemId);
     }
 
     @Test
     public void storeFoodItem() {
         // Given
         var fridgeId = UUID.randomUUID();
-        doCallRealMethod().when(fridgeService).storeFood(any(UUID.class), any(FoodType.class));
+        var foodItem = new FoodItem(UUID.randomUUID(), fridgeId, FoodType.FOOD);
+        when(fridgeService.storeFood(any())).thenReturn(foodItem);
 
         // When
-        var result = fridgeController.postFood(fridgeId, FoodType.FOOD);
+        var result = fridgeController.postFood(foodItem);
 
         // Then
         assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
-        verify(fridgeService).storeFood(fridgeId, FoodType.FOOD);
+        verify(fridgeService).storeFood(foodItem);
     }
 
     @Test
     public void removeFoodItem() {
         // Given
-        var fridgeId = UUID.randomUUID();
-        doCallRealMethod().when(fridgeService).removeFood(any(UUID.class), any(FoodType.class));
+        var foodItemId = UUID.randomUUID();
+        when(fridgeService.getFood(any())).thenReturn(Optional.of(new FoodItem(foodItemId, UUID.randomUUID(), FoodType.FOOD)));
+        doNothing().when(fridgeService).removeFood(any());
 
         // When
-        var result = fridgeController.deleteFood(fridgeId, FoodType.FOOD);
+        var result = fridgeController.deleteFood(foodItemId);
 
         // Then
         assertEquals(result.getStatusCode(), HttpStatus.NO_CONTENT);
-        verify(fridgeService).removeFood(fridgeId, FoodType.FOOD);
+        verify(fridgeService, times(1)).getFood(foodItemId);
+        verify(fridgeService).removeFood(foodItemId);
     }
 }
