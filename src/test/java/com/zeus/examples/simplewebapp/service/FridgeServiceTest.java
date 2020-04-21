@@ -2,8 +2,6 @@ package com.zeus.examples.simplewebapp.service;
 
 import com.zeus.examples.simplewebapp.db.FoodItem;
 import com.zeus.examples.simplewebapp.db.FoodItemRepository;
-import com.zeus.examples.simplewebapp.db.Fridge;
-import com.zeus.examples.simplewebapp.db.FridgeRepository;
 import com.zeus.examples.simplewebapp.domain.FoodType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,14 +9,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -26,10 +25,7 @@ import static org.mockito.Mockito.when;
 class FridgeServiceTest {
 
     @Mock
-    private FridgeRepository fridgeRepository;
-
-    @Mock
-    private FoodItemRepository foodItemRepository;
+    FoodItemRepository foodItemRepository;
 
     @InjectMocks
     private FridgeService fridgeService = new FridgeService();
@@ -39,14 +35,31 @@ class FridgeServiceTest {
         // Given
         UUID foodItemId = UUID.randomUUID();
         UUID fridgeId = UUID.randomUUID();
-        when(foodItemRepository.findByFridgeIdAndFoodType(any(UUID.class), any(FoodType.class))).thenReturn(List.of(new FoodItem(foodItemId, fridgeId, FoodType.FOOD)));
+        FoodItem foodItem = new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        when(foodItemRepository.findById(any())).thenReturn(Optional.of(foodItem));
 
         // When
-        var result = fridgeService.getFood(fridgeId, FoodType.FOOD);
+        var result = fridgeService.getFood(foodItemId);
 
         // Then
         assertNotNull(result);
-        assertThat(result).isEqualToComparingFieldByField(new FoodItem(foodItemId, fridgeId, FoodType.FOOD));
+        assertTrue(result.isPresent());
+        assertThat(result.get()).isEqualToComparingFieldByField(foodItem);
+        verify(foodItemRepository, times(1)).findById(foodItemId);
+    }
+
+    @Test
+    void noFoodToGet() {
+        // Given
+        UUID foodItemId = UUID.randomUUID();
+        when(foodItemRepository.findById(any())).thenReturn(null);
+
+        // When
+        var result = fridgeService.getFood(foodItemId);
+
+        // Then
+        assertNull(result);
+        verify(foodItemRepository, times(1)).findById(foodItemId);
     }
 
     @Test
@@ -54,17 +67,16 @@ class FridgeServiceTest {
         // Given
         UUID foodItemId = UUID.randomUUID();
         UUID fridgeId = UUID.randomUUID();
-        Fridge fridge = new Fridge(UUID.randomUUID(), "test fridge");
-        fridge.getFoodItems().add(new FoodItem(foodItemId, fridgeId, FoodType.FOOD));
-        when(fridgeRepository.save(any(Fridge.class))).thenReturn(fridge);
+        FoodItem foodItem = new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        when(foodItemRepository.save(any())).thenReturn(foodItem);
 
         // When
-        var result = fridgeService.storeFood(fridgeId, FoodType.FOOD);
+        var result = fridgeService.storeFood(foodItem);
 
         // Then
         assertNotNull(result);
-        assertEquals(result.getFridgeId(), fridgeId);
-        assertEquals(result.getFoodType(), FoodType.FOOD);
+        assertThat(result).isEqualToComparingFieldByField(foodItem);
+        verify(foodItemRepository, times(1)).save(foodItem);
     }
 
     @Test
@@ -73,13 +85,11 @@ class FridgeServiceTest {
         UUID foodItemId = UUID.randomUUID();
         UUID fridgeId = UUID.randomUUID();
         FoodItem foodItem = new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
-        when(foodItemRepository.findByFridgeIdAndFoodType(any(UUID.class), any(FoodType.class))).thenReturn(List.of(foodItem));
-        doCallRealMethod().when(foodItemRepository).delete(any(FoodItem.class));
 
         // When
-        fridgeService.removeFood(fridgeId, FoodType.FOOD);
+        fridgeService.removeFood(foodItemId);
 
         // Then
-        verify(foodItemRepository).delete(foodItem);
+        verify(foodItemRepository, times(1)).deleteById(any());
     }
 }
