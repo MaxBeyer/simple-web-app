@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Service
 public class FridgeService {
-    public FoodItem getFood(FoodType foodType) {
+    public FoodItem getFood(UUID fridgeId, FoodType foodType) {
         return null;
     }
 
