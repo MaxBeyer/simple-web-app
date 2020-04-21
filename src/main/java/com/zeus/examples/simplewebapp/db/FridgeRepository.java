@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import java.util.UUID;
 
 @Repository
-public interface GarageRepository extends JpaRepository<Fridge, UUID> {
+public interface FridgeRepository extends JpaRepository<Fridge, UUID> {
 }

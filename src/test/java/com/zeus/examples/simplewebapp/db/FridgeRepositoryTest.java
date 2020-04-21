@@ -11,16 +11,16 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-class GarageRepositoryTest {
+class FridgeRepositoryTest {
 
     @Autowired
     FoodItemRepository foodItemRepository;
 
     @Autowired
-    GarageRepository garageRepository;
+    FridgeRepository fridgeRepository;
 
     @Nested
-    @DisplayName("Garage/Food Items relation functionality")
+    @DisplayName("Fridge/Food Items relation functionality")
     class FridgeFoodRelationFunctionality {
         UUID fridgeId1 = UUID.randomUUID();
         UUID foodId1 = UUID.randomUUID();
@@ -34,10 +34,10 @@ class GarageRepositoryTest {
             fridge.getFoodItems().add(food1);
 
             // Save fridge, verify fridge is present, has exactly 1 food item, and the food item is in the food item repo
-            garageRepository.save(fridge);
+            fridgeRepository.save(fridge);
 
             // verify garage repo
-            Fridge savedFridge = garageRepository.findById(fridgeId1).orElse(null);
+            Fridge savedFridge = fridgeRepository.findById(fridgeId1).orElse(null);
             assertNotNull(savedFridge);
             assertEquals(fridgeId1, savedFridge.getId());
             assertEquals(1, savedFridge.getFoodItems().size());
@@ -53,20 +53,20 @@ class GarageRepositoryTest {
             assertEquals(fridgeId1, savedFood.getFridgeId());
 
             // db cleanup
-            garageRepository.deleteById(fridgeId1);
+            fridgeRepository.deleteById(fridgeId1);
             fridge.getFoodItems().clear();
         }
 
         @Test
         public void shouldSaveMoreFoodToSameFridge() {
             fridge.getFoodItems().add(food1);
-            garageRepository.save(fridge);
+            fridgeRepository.save(fridge);
 
             // add more food to same fridge, save fridge, and verify the initial data is unaltered
             foodItemRepository.save(food2);
 
             // verify garage repo
-            Fridge savedFridge = garageRepository.findById(fridgeId1).orElse(null);
+            Fridge savedFridge = fridgeRepository.findById(fridgeId1).orElse(null);
             assertNotNull(savedFridge);
             assertEquals(fridgeId1, savedFridge.getId());
             assertEquals(2, savedFridge.getFoodItems().size());
@@ -90,7 +90,7 @@ class GarageRepositoryTest {
             assertEquals(fridgeId1, savedFood1.getFridgeId());
 
             // db cleanup
-            garageRepository.deleteById(fridgeId1);
+            fridgeRepository.deleteById(fridgeId1);
             fridge.getFoodItems().clear();
         }
 
@@ -99,7 +99,7 @@ class GarageRepositoryTest {
             // Given
             UUID fridgeId = UUID.randomUUID();
             Fridge fridge = new Fridge(fridgeId, "test fridge");
-            garageRepository.save(fridge);
+            fridgeRepository.save(fridge);
             UUID id1 = UUID.randomUUID();
             UUID id2 = UUID.randomUUID();
             FoodItem food1 = new FoodItem(id1, fridgeId, FoodType.FOOD);
@@ -120,10 +120,10 @@ class GarageRepositoryTest {
         public void deletingFridgeAlsoDeletesFood() {
             fridge.getFoodItems().add(food1);
             fridge.getFoodItems().add(food2);
-            garageRepository.save(fridge);
+            fridgeRepository.save(fridge);
 
             // verify the fridge is saved
-            Fridge savedFridge = garageRepository.findById(fridgeId1).orElse(null);
+            Fridge savedFridge = fridgeRepository.findById(fridgeId1).orElse(null);
             assertNotNull(savedFridge);
 
             //verify food in foodItemRepo
@@ -131,7 +131,7 @@ class GarageRepositoryTest {
             assertNotNull(savedFood);
 
             //delete fridge
-            garageRepository.deleteById(fridgeId1);
+            fridgeRepository.deleteById(fridgeId1);
 
             FoodItem deletedFood = foodItemRepository.findById(foodId1).orElse(null);
             assertNull(deletedFood);
