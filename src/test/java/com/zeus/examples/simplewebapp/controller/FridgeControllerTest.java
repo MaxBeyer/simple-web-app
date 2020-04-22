@@ -34,8 +34,7 @@ public class FridgeControllerTest {
     public void getsFoodItem() {
         // Given
         var foodItemId = UUID.randomUUID();
-        var fridgeId = UUID.randomUUID();
-        var foodItem= new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        var foodItem = new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD);
         when(fridgeService.getFood(any()))
                 .thenReturn(Optional.of(foodItem));
 
@@ -45,7 +44,7 @@ public class FridgeControllerTest {
         // Then
         assertNotNull(result.getBody());
         assertEquals(result.getStatusCode(), HttpStatus.OK);
-        assertThat(result.getBody()).isEqualToComparingFieldByField(new FoodItem(foodItemId, fridgeId, FoodType.FOOD));
+        assertThat(result.getBody()).isEqualToComparingFieldByField(new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD));
         verify(fridgeService, times(1)).getFood(foodItemId);
     }
 
@@ -53,8 +52,7 @@ public class FridgeControllerTest {
     public void noFoodItemFound() {
         // Given
         var foodItemId = UUID.randomUUID();
-        var fridgeId = UUID.randomUUID();
-        var foodItem= new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        var foodItem= new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD);
         when(fridgeService.getFood(any()))
                 .thenReturn(Optional.empty());
 
@@ -70,8 +68,7 @@ public class FridgeControllerTest {
     @Test
     public void storeFoodItem() {
         // Given
-        var fridgeId = UUID.randomUUID();
-        var foodItem = new FoodItem(UUID.randomUUID(), fridgeId, FoodType.FOOD);
+        var foodItem = new FoodItem(UUID.randomUUID(), "Test Fridge", FoodType.FOOD);
         when(fridgeService.storeFood(any())).thenReturn(foodItem);
 
         // When
@@ -86,7 +83,7 @@ public class FridgeControllerTest {
     public void removeFoodItem() {
         // Given
         var foodItemId = UUID.randomUUID();
-        when(fridgeService.getFood(any())).thenReturn(Optional.of(new FoodItem(foodItemId, UUID.randomUUID(), FoodType.FOOD)));
+        when(fridgeService.getFood(any())).thenReturn(Optional.of(new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD)));
         doNothing().when(fridgeService).removeFood(any());
 
         // When

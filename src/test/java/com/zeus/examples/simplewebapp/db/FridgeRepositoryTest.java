@@ -1,14 +1,21 @@
 package com.zeus.examples.simplewebapp.db;
 
 import com.zeus.examples.simplewebapp.domain.FoodType;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class FridgeRepositoryTest {
@@ -16,126 +23,79 @@ class FridgeRepositoryTest {
     @Autowired
     FoodItemRepository foodItemRepository;
 
-    @Autowired
-    FridgeRepository fridgeRepository;
-
     @Nested
-    @DisplayName("Fridge/Food Items relation functionality")
+    @DisplayName("save, update, delete functionality")
     class FridgeFoodRelationFunctionality {
-        UUID fridgeId1 = UUID.randomUUID();
+
+        @BeforeEach
+        public void clearDb() {
+            foodItemRepository.deleteAll();
+        }
+
         UUID foodId1 = UUID.randomUUID();
-        UUID foodId2 = UUID.randomUUID();
-        Fridge fridge = new Fridge(fridgeId1, "Test Fridge");
-        FoodItem food1 = new FoodItem(foodId1, fridgeId1, FoodType.FOOD);
-        FoodItem food2 = new FoodItem(foodId2, fridgeId1, FoodType.FOOD);
+        FoodItem foodItem1 = new FoodItem(foodId1, "Beer Fridge", FoodType.FOOD);
 
         @Test
-        public void shouldSaveFoodToFridge() {
-            fridge.getFoodItems().add(food1);
-
-            // Save fridge, verify fridge is present, has exactly 1 food item, and the food item is in the food item repo
-            fridgeRepository.save(fridge);
-
-            // verify garage repo
-            Fridge savedFridge = fridgeRepository.findById(fridgeId1).orElse(null);
-            assertNotNull(savedFridge);
-            assertEquals(fridgeId1, savedFridge.getId());
-            assertEquals(1, savedFridge.getFoodItems().size());
-            assertEquals(foodId1, savedFridge.getFoodItems().get(0).getId());
-            assertEquals(food1.getFoodType(), savedFridge.getFoodItems().get(0).getFoodType());
-            assertEquals(fridgeId1, savedFridge.getFoodItems().get(0).getFridgeId());
-
-            // verify food item repo
-            FoodItem savedFood = foodItemRepository.findById(foodId1).orElse(null);
-            assertNotNull(savedFood);
-            assertEquals(foodId1, savedFood.getId());
-            assertEquals(food1.getFoodType(), savedFood.getFoodType());
-            assertEquals(fridgeId1, savedFood.getFridgeId());
-
-            // db cleanup
-            fridgeRepository.deleteById(fridgeId1);
-            fridge.getFoodItems().clear();
-        }
-
-        @Test
-        public void shouldSaveMoreFoodToSameFridge() {
-            fridge.getFoodItems().add(food1);
-            fridgeRepository.save(fridge);
-
-            // add more food to same fridge, save fridge, and verify the initial data is unaltered
-            foodItemRepository.save(food2);
-
-            // verify garage repo
-            Fridge savedFridge = fridgeRepository.findById(fridgeId1).orElse(null);
-            assertNotNull(savedFridge);
-            assertEquals(fridgeId1, savedFridge.getId());
-            assertEquals(2, savedFridge.getFoodItems().size());
-            assertEquals(foodId1, savedFridge.getFoodItems().get(0).getId());
-            assertEquals(food1.getFoodType(), savedFridge.getFoodItems().get(0).getFoodType());
-            assertEquals(fridgeId1, savedFridge.getFoodItems().get(0).getFridgeId());
-            assertEquals(foodId2, savedFridge.getFoodItems().get(1).getId());
-            assertEquals(food2.getFoodType(), savedFridge.getFoodItems().get(1).getFoodType());
-            assertEquals(fridgeId1, savedFridge.getFoodItems().get(1).getFridgeId());
-
-            // verify food item repo
-            FoodItem savedFood1 = foodItemRepository.findById(foodId1).orElse(null);
-            assertNotNull(savedFood1);
-            assertEquals(foodId1, savedFood1.getId());
-            assertEquals(food1.getFoodType(), savedFood1.getFoodType());
-            assertEquals(fridgeId1, savedFood1.getFridgeId());
-            FoodItem savedFood2 = foodItemRepository.findById(foodId2).orElse(null);
-            assertNotNull(savedFood2);
-            assertEquals(foodId2, savedFood2.getId());
-            assertEquals(food2.getFoodType(), savedFood2.getFoodType());
-            assertEquals(fridgeId1, savedFood1.getFridgeId());
-
-            // db cleanup
-            fridgeRepository.deleteById(fridgeId1);
-            fridge.getFoodItems().clear();
-        }
-
-        @Test
-        public void findByFridgeIdAndFoodTypeTest(){
+        public void saveFood() {
             // Given
-            UUID fridgeId = UUID.randomUUID();
-            Fridge fridge = new Fridge(fridgeId, "test fridge");
-            fridgeRepository.save(fridge);
-            UUID id1 = UUID.randomUUID();
-            UUID id2 = UUID.randomUUID();
-            FoodItem food1 = new FoodItem(id1, fridgeId, FoodType.FOOD);
-            FoodItem food2 = new FoodItem(id2, fridgeId, FoodType.FOOD);
-            foodItemRepository.save(food1);
-            foodItemRepository.save(food2);
+            assertFalse(foodItemRepository.findById(foodId1).isPresent());
 
             // When
-            List<FoodItem> retrievedFood = foodItemRepository.findByFridgeIdAndFoodType(fridgeId, FoodType.FOOD);
+            foodItemRepository.save(foodItem1);
 
             // Then
-            Assertions.assertNotNull(retrievedFood);
-            Assertions.assertFalse(retrievedFood.isEmpty());
-            Assertions.assertEquals(food1, retrievedFood.get(0));
+            assertTrue(foodItemRepository.findById(foodId1).isPresent());
         }
 
         @Test
-        public void deletingFridgeAlsoDeletesFood() {
-            fridge.getFoodItems().add(food1);
-            fridge.getFoodItems().add(food2);
-            fridgeRepository.save(fridge);
+        public void updateFood() {
+            // Given
+            foodItemRepository.save(foodItem1);
+            assertTrue(foodItemRepository.findById(foodId1).isPresent());
+            assertEquals(1, foodItemRepository.count());
+            UUID initialId = foodItemRepository.findById(foodId1).orElse(null).getId();
 
-            // verify the fridge is saved
-            Fridge savedFridge = fridgeRepository.findById(fridgeId1).orElse(null);
-            assertNotNull(savedFridge);
+            // When
+            FoodItem saved = foodItemRepository.save(new FoodItem(foodId1, "Test Fridge", FoodType.FOOD));
 
-            //verify food in foodItemRepo
-            FoodItem savedFood = foodItemRepository.findById(foodId1).orElse(null);
-            assertNotNull(savedFood);
-
-            //delete fridge
-            fridgeRepository.deleteById(fridgeId1);
-
-            FoodItem deletedFood = foodItemRepository.findById(foodId1).orElse(null);
-            assertNull(deletedFood);
+            // Then
+            assertEquals(foodItem1.getId(), saved.getId());
+            assertEquals(foodItem1.getFoodType(), saved.getFoodType());
+            assertNotEquals(foodItem1.getFridgeName(), saved.getFridgeName());
+            assertEquals(1, foodItemRepository.count());
         }
+
+        @Test
+        public void deleteFood() {
+            // Given
+            foodItemRepository.save(foodItem1);
+            assertTrue(foodItemRepository.findById(foodId1).isPresent());
+
+            // When
+            foodItemRepository.deleteById(foodId1);
+
+            // Then
+            assertFalse(foodItemRepository.findById(foodId1).isPresent());
+            assertEquals(0, foodItemRepository.count());
+        }
+    }
+
+    @Test
+    public void findByFridgeNameAndFoodTypeTest() {
+        // Given
+        FoodItem food1 = new FoodItem(UUID.randomUUID(), "Beer Fridge", FoodType.FOOD);
+        FoodItem food2 = new FoodItem(UUID.randomUUID(), "Beer Fridge", FoodType.FOOD);
+        foodItemRepository.save(food1);
+        foodItemRepository.save(food2);
+
+        // When
+        List<FoodItem> retrievedFood = foodItemRepository.findByFridgeNameAndFoodType("Beer Fridge", FoodType.FOOD);
+
+        // Then
+        assertNotNull(retrievedFood);
+        assertFalse(retrievedFood.isEmpty());
+        assertEquals(2, retrievedFood.size());
+        assertEquals(food1, retrievedFood.get(0));
     }
 
 }

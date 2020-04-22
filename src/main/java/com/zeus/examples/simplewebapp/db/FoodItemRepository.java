@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface FoodItemRepository extends JpaRepository<FoodItem, UUID> {
-    List<FoodItem> findByFridgeIdAndFoodType(UUID fridgeId, FoodType foodType);
+    List<FoodItem> findByFridgeNameAndFoodType(String fridgeName, FoodType foodType);
 }
