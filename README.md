@@ -49,7 +49,7 @@ Food Item Repository keeps track of multiple refridgerators by way of a column n
 
 | foodId | fridgeName | type |
 | --- | --- | --- |
-| UUID | varchar | Enum (beverage/food/soda can/other) |
+| UUID | varchar | Enum |
 
 To view the database, visit http://localhost:8080/h2-console
 * username = sa
