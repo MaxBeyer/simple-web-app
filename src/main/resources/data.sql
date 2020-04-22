@@ -7,9 +7,9 @@ create table food_item (
 );
 
 insert into food_item (id, fridge_Name, food_type) values
-  ('fc29daa0-0b16-4155-a6aa-b3cc4803aef5', 'Fridge', 'FOOD'),
-  ('f6fb42cf-0db7-4d11-8153-92f4df2c1b28', 'Fridge', 'BEVERAGE'),
-  ('e217216c-9b89-4da2-b3d6-dc0e3ee7217f', 'Beer Fridge', 'FOOD'),
+  ('fc29daa0-0b16-4155-a6aa-b3cc4803aef5', 'Generic Fridge', 'FOOD'),
+  ('f6fb42cf-0db7-4d11-8153-92f4df2c1b28', 'Generic Fridge', 'BEVERAGE'),
+  ('e217216c-9b89-4da2-b3d6-dc0e3ee7217f', 'Generic Fridge', 'FOOD'),
 ('5f510e56-b8d8-4dbf-a79d-be5a640e2554', 'Beer Fridge', 'SODA_CAN'),
 ('aff945ae-c823-4251-8ebc-f47e3147f040', 'Beer Fridge', 'SODA_CAN'),
 ('66aeb69a-040d-4508-9f02-c8efa14afb28', 'Beer Fridge', 'SODA_CAN'),
