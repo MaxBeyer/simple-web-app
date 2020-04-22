@@ -3,6 +3,7 @@ package com.zeus.examples.simplewebapp.service;
 import com.zeus.examples.simplewebapp.db.FoodItem;
 import com.zeus.examples.simplewebapp.db.FoodItemRepository;
 import com.zeus.examples.simplewebapp.domain.FoodType;
+import com.zeus.examples.simplewebapp.exception.ApiException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.times;
@@ -75,6 +77,20 @@ class FridgeServiceTest {
         assertNotNull(result);
         assertThat(result).isEqualToComparingFieldByField(foodItem);
         verify(foodItemRepository, times(1)).save(foodItem);
+    }
+
+    @Test
+    void guardrailTest() {
+        // Given
+        UUID foodItemId = UUID.randomUUID();
+        FoodItem foodItem = new FoodItem(foodItemId, "Test Fridge", FoodType.SODA_CAN);
+        when(foodItemRepository.countByFridgeNameAndFoodType(any(), any())).thenReturn(12);
+
+        // When
+        assertThrows(ApiException.class, () -> fridgeService.storeFood(foodItem));
+
+        // Then
+        verify(foodItemRepository, times(1)).countByFridgeNameAndFoodType("Test Fridge", FoodType.SODA_CAN);
     }
 
     @Test

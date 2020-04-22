@@ -81,7 +81,7 @@ class FridgeRepositoryTest {
     }
 
     @Test
-    public void findByFridgeNameAndFoodTypeTest() {
+    public void countByFridgeNameAndFoodTypeTest() {
         // Given
         FoodItem food1 = new FoodItem(UUID.randomUUID(), "Beer Fridge", FoodType.FOOD);
         FoodItem food2 = new FoodItem(UUID.randomUUID(), "Beer Fridge", FoodType.FOOD);
@@ -89,13 +89,11 @@ class FridgeRepositoryTest {
         foodItemRepository.save(food2);
 
         // When
-        List<FoodItem> retrievedFood = foodItemRepository.findByFridgeNameAndFoodType("Beer Fridge", FoodType.FOOD);
+        Integer retrievedFood = foodItemRepository.countByFridgeNameAndFoodType("Beer Fridge", FoodType.FOOD);
 
         // Then
         assertNotNull(retrievedFood);
-        assertFalse(retrievedFood.isEmpty());
-        assertEquals(2, retrievedFood.size());
-        assertEquals(food1, retrievedFood.get(0));
+        assertEquals(2, retrievedFood);
     }
 
 }
