@@ -24,7 +24,7 @@ There are 3 endpoints that perform 4 operations
 * 204 = foodItem not found in any fridge
 * example request param = 5f510e56-b8d8-4dbf-a79d-be5a640e2554
 
-POST - http://localhost:8080/fridges/
+### POST - http://localhost:8080/fridges/
 * 204 = item stored to DB
 * 400 = soda can guardrail
 * example request body = `{
@@ -33,11 +33,11 @@ POST - http://localhost:8080/fridges/
                              "foodType": "SODA_CAN"
                          }`
 
-DELETE - http://localhost:8080/fridges/food/{foodItemId}
+### DELETE - http://localhost:8080/fridges/food/{foodItemId}
 * 204 = foodItem deleted if exists, or there is nothing to delete
 * example request param = 5f510e56-b8d8-4dbf-a79d-be5a640e2554
 
-_**Note**: The POST endpoint is intended to be used for both new data entries, and updates._
+_**Note**: The POST endpoint is intended to be used for both new data entries and updates._
 
 # Database
 Database used is a simple H2 database writing to a local file.
