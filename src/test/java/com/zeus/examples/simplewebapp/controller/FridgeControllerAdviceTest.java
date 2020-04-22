@@ -15,6 +15,6 @@ public class FridgeControllerAdviceTest {
     void handleHttpClientErrorException(){
         var ex = new ApiException(HttpStatus.UNAUTHORIZED, "test message");
         var result = advice.handleApiException(ex);
-        assertEquals(HttpStatus.FORBIDDEN, result.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, result.getStatusCode());
     }
 }
