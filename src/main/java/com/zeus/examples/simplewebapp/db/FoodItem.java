@@ -1,5 +1,6 @@
 package com.zeus.examples.simplewebapp.db;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.zeus.examples.simplewebapp.domain.FoodType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode
+//@JsonDeserialize(builder = FoodItem.class)
 public class FoodItem {
     @Id
     private UUID id;
