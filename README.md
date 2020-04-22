@@ -1,4 +1,4 @@
-# simple-web-app
+# What's in the Fridge? (a simple web app)
  Creating a simple web app utilizing Java 11 and Spring.
 
  **Story**: I want to add, update, view, delete, or change what's in the fridge
@@ -58,7 +58,6 @@ To view the database, visit http://localhost:8080/h2-console
 # Would Have Liked to..
 * Used Kotlin
 * Used mockK as the test framework.
-* have github actions set up and configured for automatic builds/tests
 * Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
 * Understood the intricacies of project lombok more
 * Used Maven instead of Gradle
