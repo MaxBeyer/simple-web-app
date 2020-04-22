@@ -22,6 +22,7 @@ public class FridgeService {
     }
 
     public FoodItem storeFood(FoodItem foodItem) {
+
         return foodItemRepository.save(foodItem);
     }
 
