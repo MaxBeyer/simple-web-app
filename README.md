@@ -13,37 +13,43 @@
 * run a gradle build
 * run the resulting jar file from the build
 
-# Endpoints
+# Usage
+The app preloads an in memory database with a "Generic Fridge" that contains some food and a beverage, and also a "Beer Fridge" containing 12 soda cans. Therefore, all the endpoints can be used immediately.  Keep in mind though, you will have to remove some soda cans from the Beer Fridge before you're allowed to put any more in. (see resources/data.sql for more details)
+
+## Endpoints
 There are 3 endpoints that perform 4 operations
 
-GET - http://localhost:8080/fridges/food/{foodItemId}
+### GET - http://localhost:8080/fridges/food/{foodItemId}
 * 200 = foodItem found, returns with foodItem in the body
 * 204 = foodItem not found in any fridge
+* example request param = 5f510e56-b8d8-4dbf-a79d-be5a640e2554
 
 POST - http://localhost:8080/fridges/
-* 204 = success, item stored to DB
+* 204 = item stored to DB
+* 400 = soda can guardrail
+* example request body = `{
+                             "id": "fc29daa0-0b16-4155-a6aa-b3cc4803aef5",
+                             "fridgeName": "Beer Fridge",
+                             "foodType": "SODA_CAN"
+                         }`
 
 DELETE - http://localhost:8080/fridges/food/{foodItemId}
 * 204 = foodItem deleted if exists, or there is nothing to delete
+* example request param = 5f510e56-b8d8-4dbf-a79d-be5a640e2554
+
+_**Note**: The POST endpoint is intended to be used for both new data entries, and updates._
 
 # Database
 Database used is a simple H2 database writing to a local file.
 
 Requirements state that there are multiple refridgerators.
 
-The refridgerators in the fridge repository then have a one to many relationship with the food items stored inside of them, using the FoodItem.fridgeId -> Fridge.id as the foreign key constraint.
-
-### Fridge Repository
-
-| id | fridge name |
-| --- | --- | 
-| Int | varchar |
-
+Food Item Repository keeps track of multiple refridgerators by way of a column named "fridgeName".  I initially thought a relational database was the way to go on this, but that proved too cumbersome for such a simple relationship.
 ### Food Item Repository
 
-| foodId | fridgeId | type |
+| foodId | fridgeName | type |
 | --- | --- | --- |
-| Int | Int | Enum (beverage/food/soda can/other) |
+| UUID | varchar | Enum (beverage/food/soda can/other) |
 
 To view the database, visit http://localhost:8080/h2-console
 * username = sa
@@ -60,11 +66,11 @@ To view the database, visit http://localhost:8080/h2-console
 * more robust edge case testing
 * more generic requests (using food type only)
     * this seems like more of an actual use case: "Get me a cold can of soda"
-    * currently I am doing: "Get me the can of soda with serial number x from fridge with the serial number y"
+    * currently I am doing: "Get me the can of soda with serial number x from the right fridge"
 * more detailed logs. 
     * for instance, when updating a food item, the logs could say "updating food item" instead of "putting food item in the fridge"
 * implement Swagger, or create proper RestDocs.
 * not have used UUIDs for database
-    * UUIDs are great for large scale applications, but it would have created an easier user experience to have simpler IDs for the Fridges and Food Items, or to even use Strings.  That way we could store food by foodName to fridgeName instead of by foodItemId to fridgeId.
+    * UUIDs are great for large scale applications with a lot of  data, but it would have created an easier user experience to have simpler IDs for the Food Items.
 * more robust exception handling
 * implement hateaus for POST responses, instead of sending back 204
