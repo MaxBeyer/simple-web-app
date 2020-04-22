@@ -34,8 +34,7 @@ class FridgeServiceTest {
     void getFood() {
         // Given
         UUID foodItemId = UUID.randomUUID();
-        UUID fridgeId = UUID.randomUUID();
-        FoodItem foodItem = new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        FoodItem foodItem = new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD);
         when(foodItemRepository.findById(any())).thenReturn(Optional.of(foodItem));
 
         // When
@@ -66,8 +65,7 @@ class FridgeServiceTest {
     void storeFood() {
         // Given
         UUID foodItemId = UUID.randomUUID();
-        UUID fridgeId = UUID.randomUUID();
-        FoodItem foodItem = new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        FoodItem foodItem = new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD);
         when(foodItemRepository.save(any())).thenReturn(foodItem);
 
         // When
@@ -83,8 +81,7 @@ class FridgeServiceTest {
     void removeFood() {
         // Given
         UUID foodItemId = UUID.randomUUID();
-        UUID fridgeId = UUID.randomUUID();
-        FoodItem foodItem = new FoodItem(foodItemId, fridgeId, FoodType.FOOD);
+        FoodItem foodItem = new FoodItem(foodItemId, "Test Fridge", FoodType.FOOD);
 
         // When
         fridgeService.removeFood(foodItemId);

@@ -1,13 +1,11 @@
 package com.zeus.examples.simplewebapp.db;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.zeus.examples.simplewebapp.domain.FoodType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -17,18 +15,16 @@ import java.util.UUID;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @EqualsAndHashCode
-//@JsonDeserialize(builder = FoodItem.class)
 public class FoodItem {
     @Id
     private UUID id;
-    @Column(name = "fridge_id")
-    private UUID fridgeId;
+    private String fridgeName;
     @Enumerated(EnumType.STRING)
     private FoodType foodType;
 
-    public FoodItem(UUID id, UUID fridgeId, FoodType foodType){
+    public FoodItem(UUID id, String fridgeName, FoodType foodType){
         this.id = id;
-        this.fridgeId = fridgeId;
+        this.fridgeName = fridgeName;
         this.foodType = foodType;
     }
 }

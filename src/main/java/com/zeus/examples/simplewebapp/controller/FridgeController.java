@@ -41,7 +41,7 @@ public class FridgeController {
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Void> postFood(@RequestBody FoodItem foodItem) {
-        log.info("putting " + foodItem.getFoodType().toString() + " into fridge: " + foodItem.getFridgeId().toString() + "...");
+        log.info("putting " + foodItem.getFoodType().toString() + " into fridge: " + foodItem.getFridgeName() + "...");
         fridgeService.storeFood(foodItem);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
