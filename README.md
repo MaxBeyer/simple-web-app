@@ -19,6 +19,9 @@ The app preloads an in memory database with a "Generic Fridge" that contains som
 ## Endpoints
 There are 3 endpoints that perform 4 operations
 
+### Authentication
+The app is setup with basic security and authentication provided by Spring Security.  Include the username "username" and password "password" on any of your requests in order to make them successful. 
+
 ### GET - http://localhost:8080/fridges/food/{foodItemId}
 * 200 = foodItem found, returns with foodItem in the body
 * 204 = foodItem not found in any fridge
@@ -60,16 +63,18 @@ To view the database, visit http://localhost:8080/h2-console
 * Used mockK as the test framework.
 * Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
 * Understood the intricacies of project lombok more
+* Utilize some of the newer features of Java 11
 * Used Maven instead of Gradle
     * I typically code on a Mac, but I did this challenge on a Windows box. I am used to using gradle so that is what I initially chose, however that has caused me a lot of trouble with setup.
 * more robust edge case testing
-* more generic requests (using food type only)
+* more generic requests (perhaps using food type only)
     * this seems like more of an actual use case: "Get me a cold can of soda"
     * currently I am doing: "Get me the can of soda with serial number x from the right fridge"
 * more detailed logs. 
-    * for instance, when updating a food item, the logs could say "updating food item" instead of "putting food item in the fridge"
+    * for instance, when updating a food item, the logs could say "updating food item" instead of "putting food item in the fridge" as they do currently for every POST request (the app is unable to distinguish between them)
 * implement Swagger, or create proper RestDocs.
 * not have used UUIDs for database
     * UUIDs are great for large scale applications with a lot of  data, but it would have created an easier user experience to have simpler IDs for the Food Items.
-* more robust exception handling
-* implement hateaus for POST responses, instead of sending back 204
+* more intuitive exception handling
+* implement hateoas for POST responses, instead of sending back 204
+* more useful metrics
