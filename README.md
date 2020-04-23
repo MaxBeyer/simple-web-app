@@ -55,6 +55,12 @@ Food Item Repository keeps track of multiple refridgerators by way of a column n
 | UUID | varchar | Enum |
 
 To view the database, visit http://localhost:8080/h2-console
+
+You'll first be prompted by the App's security:
+* username = username
+* password = password
+
+Then you'll be prompted by H2's security:
 * username = sa
 * password = password
 
