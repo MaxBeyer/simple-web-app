@@ -10,9 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.UUID;
 
@@ -23,11 +28,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
 
-    @Autowired
     TestRestTemplate testRestTemplate;
 
     @Autowired
     FoodItemRepository foodItemRepository;
+
+    URL base;
+
+    @LocalServerPort
+    int port;
+
+    @BeforeEach
+    public void setUp() throws MalformedURLException {
+        testRestTemplate = new TestRestTemplate("user", "password");
+        base = new URL("http://localhost:" + port);
+    }
 
     @Nested
     @DisplayName("test the endpoints")
@@ -38,11 +53,7 @@ public class AcceptanceTest {
             foodItemRepository.deleteAll();
         }
 
-        String fridgeId1 = "Test Fridge";
-        String fridgeId2 = "Beer Fridge";
         UUID foodItemId1 = UUID.randomUUID();
-        UUID foodItemId2 = UUID.randomUUID();
-        UUID foodItemId3 = UUID.randomUUID();
         FoodItem request1 = new FoodItem(foodItemId1, "Test Fridge", FoodType.FOOD);
         FoodItem request2 = new FoodItem(foodItemId1, "Beer Fridge", FoodType.SODA_CAN);
 
@@ -55,7 +66,7 @@ public class AcceptanceTest {
 
             // When
             ResponseEntity<String> response = testRestTemplate.getForEntity(
-                    "/fridges/food/{foodItemId}",
+                    base.toString()+"/fridges/food/{foodItemId}",
                     String.class,
                     Map.of("foodItemId", foodItemId1)
             );
@@ -73,7 +84,7 @@ public class AcceptanceTest {
 
             // When
             ResponseEntity<String> response = testRestTemplate.postForEntity(
-                    "/fridges/",
+                    base.toString()+"/fridges/",
                     request1,
                     String.class);
 
@@ -91,7 +102,7 @@ public class AcceptanceTest {
             // when
             // move food to different fridge
             ResponseEntity<String> response = testRestTemplate.postForEntity(
-                    "/fridges/",
+                    base.toString()+"/fridges/",
                     request2,
                     String.class);
 
@@ -107,7 +118,13 @@ public class AcceptanceTest {
             assertTrue(foodItemRepository.findById(foodItemId1).isPresent());
 
             // When
-            foodItemRepository.deleteById(foodItemId1);
+            ResponseEntity<String> response = testRestTemplate.exchange(
+                    base.toString()+"/fridges/food/{foodItemId}",
+                    HttpMethod.DELETE,
+                    HttpEntity.EMPTY,
+                    String.class,
+                    Map.of("foodItemId", foodItemId1)
+            );
 
             // Then
             assertFalse(foodItemRepository.findById(foodItemId1).isPresent());
@@ -135,7 +152,7 @@ public class AcceptanceTest {
             // when
             // add 13th can of soda
             ResponseEntity<String> response = testRestTemplate.postForEntity(
-                    "/fridges/",
+                    base.toString()+"/fridges/",
                     request2,
                     String.class);
 
