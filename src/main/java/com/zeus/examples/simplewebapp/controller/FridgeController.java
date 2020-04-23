@@ -2,6 +2,7 @@ package com.zeus.examples.simplewebapp.controller;
 
 import com.zeus.examples.simplewebapp.db.FoodItem;
 import com.zeus.examples.simplewebapp.service.FridgeService;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,9 @@ public class FridgeController {
     FridgeService fridgeService;
 
     @GetMapping(value = "/food/{foodItemId}")
+    @Timed
     public ResponseEntity<FoodItem> getFoodItem(@PathVariable UUID foodItemId) {
-        log.info("getting food: " + foodItemId.toString() + " from the fridges...");
+        log.info("checking to see if food: " + foodItemId.toString() + " is in the fridges...");
         Optional<FoodItem> foodItem = fridgeService.getFood(foodItemId);
         if (foodItem.isPresent()){
             log.info("foodItem: " + foodItemId.toString() + " found.");
@@ -40,6 +42,7 @@ public class FridgeController {
     }
 
     @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @Timed
     public ResponseEntity<Void> postFood(@RequestBody FoodItem foodItem) {
         log.info("putting " + foodItem.getFoodType().toString() + " into fridge: " + foodItem.getFridgeName() + "...");
         fridgeService.storeFood(foodItem);
@@ -47,10 +50,13 @@ public class FridgeController {
     }
 
     @DeleteMapping("/food/{foodItemId}")
+    @Timed
     public ResponseEntity<Void> deleteFood(@PathVariable UUID foodItemId) {
-        log.info("removing foodItem "+ foodItemId.toString()+ " from the fridges...");
         if (getFoodItem(foodItemId).getStatusCode().equals(HttpStatus.OK)){
             fridgeService.removeFood(foodItemId);
+            log.info("removing foodItem "+ foodItemId.toString()+ " from the fridge.");
+        } else {
+            log.info("nothing to delete: unable to find foodItem "+ foodItemId.toString()+ " in any fridge.");
         }
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

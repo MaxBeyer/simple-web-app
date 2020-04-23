@@ -4,6 +4,7 @@ import com.zeus.examples.simplewebapp.db.FoodItem;
 import com.zeus.examples.simplewebapp.db.FoodItemRepository;
 import com.zeus.examples.simplewebapp.domain.FoodType;
 import com.zeus.examples.simplewebapp.exception.ApiException;
+import io.micrometer.core.annotation.Timed;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,12 @@ public class FridgeService {
     FoodItemRepository foodItemRepository;
 
     // get a specific food item
+    @Timed
     public Optional<FoodItem> getFood(UUID foodItemId) {
             return foodItemRepository.findById(foodItemId);
     }
 
+    @Timed
     public FoodItem storeFood(FoodItem foodItem) {
         if (foodItem.getFoodType().equals(FoodType.SODA_CAN)){
             var sodaList = foodItemRepository.countByFridgeNameAndFoodType(foodItem.getFridgeName(), FoodType.SODA_CAN);
@@ -34,6 +37,7 @@ public class FridgeService {
         return foodItemRepository.save(foodItem);
     }
 
+    @Timed
     public void removeFood(UUID foodItemId) {
         foodItemRepository.deleteById(foodItemId);
     }
