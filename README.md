@@ -64,23 +64,33 @@ Then you'll be prompted by H2's security:
 * username = sa
 * password = password
 
-# Would Have Liked to..
-* Used Kotlin
-* Used mockK as the test framework.
-* Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
-* Understood the intricacies of project lombok more
-* Utilize some of the newer features of Java 11
-* Used Maven instead of Gradle
-    * I typically code on a Mac, but I did this challenge on a Windows box. I am used to using gradle so that is what I initially chose, however that has caused me a lot of trouble with setup.
+# If I had more time, would like to..
+* Used a better DB model
+    * Fridge should be it's own table which has a OneToMany relationship to a FoodItem table.
+    * different fridges could then be implementations of the Fridge interface, each possibly having their own guardrail value.
+    * This would solve the leaky abstraction seen in the FridgeService class, where the service defines the guardrail for the fridge, instead checking the fridge object to see what its guardrail value is.
+* reorganized and cleaned up the names a bit
+    * FoodItemTypeRepository named to something simpler and more descriptive.
+    * project name from simple-web-app to fridge-challenge
+    * FoodItem is a domain object, but is not in the domain package
+* not have used UUIDs for database
+    * UUIDs are great for large scale applications with a lot of  data, but it would have created an easier user experience to have simpler IDs for the Food Items.
 * more robust edge case testing
+* more intuitive exception handling
+* more detailed logs. 
+    * for instance, when updating a food item, the logs could say "updating food item" instead of "putting food item in the fridge" as they do currently for every POST request (the app is unable to distinguish between them)
+* more useful metrics
 * more generic requests (perhaps using food type only)
     * this seems like more of an actual use case: "Get me a cold can of soda"
     * currently I am doing: "Get me the can of soda with serial number x from the right fridge"
-* more detailed logs. 
-    * for instance, when updating a food item, the logs could say "updating food item" instead of "putting food item in the fridge" as they do currently for every POST request (the app is unable to distinguish between them)
-* implement Swagger, or create proper RestDocs.
-* not have used UUIDs for database
-    * UUIDs are great for large scale applications with a lot of  data, but it would have created an easier user experience to have simpler IDs for the Food Items.
-* more intuitive exception handling
 * implement hateoas for POST responses, instead of sending back 204
-* more useful metrics
+* Understood the intricacies of project lombok more
+* Utilize some of the newer features of Java 11
+## Use Different Tools
+* Used Kotlin
+* Used mockK as the test framework.
+* Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
+* Used a linter
+* implement Swagger, or create proper RestDocs.
+* Used Maven instead of Gradle
+    * I typically code on a Mac, but I did this challenge on a Windows box. I am used to using gradle so that is what I initially chose, however that has caused me a lot of trouble with setup.
