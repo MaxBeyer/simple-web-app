@@ -86,7 +86,7 @@ Then you'll be prompted by H2's security:
 * implement hateoas for POST responses, instead of sending back 204
 * Understood the intricacies of project lombok more
 * Utilize some of the newer features of Java 11
-## Use Different Tools
+## In a perfect world, I would have...
 * Used Kotlin
 * Used mockK as the test framework.
 * Used Docker and PostgreSQL instead of H2 (Docker cannot be installed on a machine running Windows Home Edition)
