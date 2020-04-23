@@ -7,6 +7,7 @@
  
  **Constraint**: there are multiple refrigerators
  
+ _**Note**: [after some reflection, I've documented what I would improve or do differently if I had more time or had to do the challenge over again.](https://github.com/ZeusAndHisBeard/simple-web-app/blob/master/README.md#if-i-had-more-time-would-like-to)_
 # Running the App
 * Clone this project into your favorite IDE (I used IntelliJ)
 * launch the SpringBoot app internally from the IDE, or...
@@ -35,19 +36,21 @@ The app is setup with basic security and authentication provided by Spring Secur
                              "fridgeName": "Beer Fridge",
                              "foodType": "SODA_CAN"
                          }`
+                         
+_**Note**: The POST endpoint is intended to be used for both new data entries and updates._
 
 ### DELETE - http://localhost:8080/fridges/food/{foodItemId}
 * 204 = foodItem deleted if exists, or there is nothing to delete
 * example request param = 5f510e56-b8d8-4dbf-a79d-be5a640e2554
-
-_**Note**: The POST endpoint is intended to be used for both new data entries and updates._
 
 # Database
 Database used is a simple H2 database writing to a local file.
 
 Requirements state that there are multiple refridgerators.
 
-Food Item Repository keeps track of multiple refridgerators by way of a column named "fridgeName".  I initially thought a relational database was the way to go on this, but that proved too cumbersome for such a simple relationship.
+Food Item Repository keeps track of multiple refridgerators by way of a column named "fridgeName".  I initially thought a relational database was the way to go on this, but that proved too cumbersome for such a simple relationship under the time limit.  
+
+I have more thoughts on what I would have done differently with this DB [below](https://github.com/ZeusAndHisBeard/simple-web-app/blob/master/README.md#if-i-had-more-time-would-like-to)
 ### Food Item Repository
 
 | foodId | fridgeName | type |
